@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html ng-app="libraryApp">
+<head>
+    <title>Library Management</title>
+</head>
+<body ng-controller="LibraryController">
+    <h1>Library Book Management</h1>
+    <table border="1" style="width: 50%; text-align: left;">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Book Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in library">
+                <td>{{ item.category }}</td>
+                <td><input type="number" ng-model="item.count"></td>
+            </tr>
+        </tbody>
+    </table>
+    <h2>Add New Category</h2>
+    <form ng-submit="addCategory()">
+        <label>Category Name:</label>
+        <input type="text" ng-model="newCategory.name" required>
+        <br>
+        <label>Initial Book Count:</label>
+        <input type="number" ng-model="newCategory.count" required>
+        <br><br>
+        <button type="submit">Add Category</button>
+    </form>
+    <p style="color: red;" ng-show="errorMessage">{{ errorMessage }}</p>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        var app = angular.module('libraryApp', []);
+        app.controller('LibraryController', function($scope) {
+            $scope.library = [
+                { category: 'Fiction', count: 120 },
+                { category: 'Non-Fiction', count: 80 },
+                { category: 'Science', count: 150 },
+                { category: 'Mathematics', count: 70 }
+            ];
+            $scope.newCategory = { name: '', count: 0 };
+            $scope.errorMessage = '';
+            $scope.addCategory = function() {
+                var exists = $scope.library.some(function(item) {
+                    return item.category.toLowerCase() === $scope.newCategory.name.toLowerCase();
+                });
+                if (exists) {
+                    $scope.errorMessage = 'Category name must be unique!';
+                } else {
+                    $scope.library.push({
+                        category: $scope.newCategory.name,
+                        count: parseInt($scope.newCategory.count)
+                    });
+                    $scope.newCategory = { name: '', count: 0 };
+                    $scope.errorMessage = '';
+                }
+            };
+        });
+    </script>
+</body>
+</html>
